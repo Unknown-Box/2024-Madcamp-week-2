@@ -1,74 +1,9 @@
 import { Database } from 'sqlite3';
 import { Injectable } from "@nestjs/common";
-import { SHA256B64 } from 'src/utils/utils';
+import { DBHander, SHA256B64 } from 'src/utils/utils';
 
 @Injectable()
 export class AccountsRepository {
-  private static _db: Database | null = null;
-
-  constructor() {}
-
-  get db(): Database {
-    if (AccountsRepository._db != null)
-      return AccountsRepository._db;
-
-    const db = new Database(':memory:');
-    const initData = [
-      {
-        type: 'student',
-        email: 'psw030125@gmail.com',
-        password: 'NJs8zLWOEnYA0krl+V6TeKVWn8AsiAh6xhXveji5ZrM=',
-        displayName: 'Sangwoo Park'
-      },
-      {
-        type: 'expert',
-        email: 'didtpgml0627@gmail.com',
-        password: 'NJs8zLWOEnYA0krl+V6TeKVWn8AsiAh6xhXveji5ZrM=',
-        displayName: '양세희'
-      }
-    ];
-
-    db.serialize(function() {
-      db.run(`
-        CREATE TABLE "Users" (
-          "id"	INTEGER,
-          "type"	TEXT NOT NULL,
-          "email"	TEXT NOT NULL UNIQUE,
-          "password" TEXT NOT NULL,
-          "display_name"	TEXT NOT NULL,
-          "is_deleted"	INTEGER NOT NULL DEFAULT 0,
-          "created_at"	INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          "updated_at"	INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          PRIMARY KEY("id")
-        )`
-      );
-      for (let record of initData) {
-        db.run(
-          `INSERT INTO "Users" (
-            "type",
-            "email",
-            "password",
-            "display_name"
-          ) VALUES (
-            ?,
-            ?,
-            ?,
-            ?
-          )`,
-          [
-            record.type,
-            record.email,
-            record.password,
-            record.displayName
-          ]
-        );
-      }
-    });
-
-    AccountsRepository._db = db;
-
-    return db;
-  }
 
   private encryptPassword(password: string) {
     const salt = process.env.ENC_PASSWORD_SALT;
@@ -76,7 +11,7 @@ export class AccountsRepository {
   }
 
   getUserByEmail(email: string): Promise<any | null> {
-    const db = this.db;
+    const db = new DBHander().db;
 
     return new Promise((resolve, reject) => {
       db.get(
@@ -100,7 +35,7 @@ export class AccountsRepository {
   }
 
   getUserByEmailPassword(email: string, password: string): Promise<any | null> {
-    const db = this.db;
+    const db = new DBHander().db;
     console.log(email, this.encryptPassword(password));
 
     return new Promise((resolve, reject) => {
@@ -133,7 +68,7 @@ export class AccountsRepository {
     password: string,
     displayName: string
   ): Promise<boolean> {
-    const db = this.db;
+    const db = new DBHander().db;
 
     return new Promise((resolve, reject) => {
       db.run(

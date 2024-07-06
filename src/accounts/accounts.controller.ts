@@ -1,7 +1,15 @@
-import { BadRequestException, Body, ConflictException, Controller, Get, Header, InternalServerErrorException, NotFoundException, Post, Query, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  ConflictException,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  NotFoundException,
+  Post,
+  Query
+} from '@nestjs/common';
 import { AccountsService } from './accounts.service';
-import e, { Response } from 'express';
-import { HTMLRedirection } from 'src/utils/utils';
 
 @Controller('accounts')
 export class AccountsController {
