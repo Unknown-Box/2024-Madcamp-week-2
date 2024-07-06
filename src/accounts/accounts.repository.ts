@@ -15,10 +15,16 @@ export class AccountsRepository {
     const db = new Database(':memory:');
     const initData = [
       {
-        type: 'expert',
+        type: 'student',
         email: 'psw030125@gmail.com',
         password: 'NJs8zLWOEnYA0krl+V6TeKVWn8AsiAh6xhXveji5ZrM=',
         displayName: 'Sangwoo Park'
+      },
+      {
+        type: 'expert',
+        email: 'didtpgml0627@gmail.com',
+        password: 'NJs8zLWOEnYA0krl+V6TeKVWn8AsiAh6xhXveji5ZrM=',
+        displayName: '양세희'
       }
     ];
 

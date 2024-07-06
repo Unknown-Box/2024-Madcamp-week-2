@@ -37,7 +37,6 @@ export class AccountsService {
       }
     );
     const { payload } = this.parseJWT(res.data['id_token']);
-
     return payload['email'] ?? null;
   }
 
@@ -61,6 +60,10 @@ export class AccountsService {
   async createJWTByEmail(email: string): Promise<string | null> {
     const user = await this.accountRepository.getUserByEmail(email);
 
+    if (user === null) {
+      return null;
+    }
+
     const userId = user['id'] as string;
     const type = user['type'] as string;
     const displayName = user['display_name'] as string;
@@ -71,7 +74,7 @@ export class AccountsService {
   }
 
   async createJWTByEmailPassword(email: string, password: string): Promise<string | null> {
-    const user = this.accountRepository.getUserByEmailPassword(email, password);
+    const user = await this.accountRepository.getUserByEmailPassword(email, password);
 
     const userId = user['id'] as string;
     const type = user['type'] as string;

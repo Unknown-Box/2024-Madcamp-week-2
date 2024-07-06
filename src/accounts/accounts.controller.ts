@@ -17,10 +17,9 @@ export class AccountsController {
     }
 
     const token = await this.accountService.createJWTByEmailPassword(email, password);
-    console.log(token);
 
     if (token === null) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return { token };
@@ -37,30 +36,30 @@ export class AccountsController {
         || !email
         || !password
         || !displayName) {
-      return new BadRequestException();
+      throw new BadRequestException();
     }
 
     const isAlreadyExist = await this.accountService.existByEmail(email);
     if (isAlreadyExist) {
-      return new ConflictException();
+      throw new ConflictException();
     }
   }
 
   @Get('kakao/signin')
   async kakaoSignIn(@Query('code') code?: string) {
     if (code === null) {
-      return new BadRequestException();
+      throw new BadRequestException();
     }
 
     const email = await this.accountService.getEmailByKakaoOAuth(code);
     if (email === null) {
       console.log('social email doesn exists');
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     const token = await this.accountService.createJWTByEmail(email);
     if (token === null) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return { token };
@@ -69,18 +68,18 @@ export class AccountsController {
   @Get('google/signin')
   async googleSignIn(@Query('code') code?: string) {
     if (code === null) {
-      return new BadRequestException();
+      throw new BadRequestException();
     }
 
     const email = await this.accountService.getEmailByGoogleOAuth(code);
     if (email === null) {
       console.log('social email doesn exists');
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     const token = await this.accountService.createJWTByEmail(email);
     if (token === null) {
-      return new NotFoundException();
+      throw new NotFoundException();
     }
 
     return { token };
