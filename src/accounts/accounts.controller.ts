@@ -59,7 +59,7 @@ export class AccountsController {
 
     const token = await this.accountService.createJWTByEmail(email);
     if (token === null) {
-      throw new NotFoundException();
+      throw new NotFoundException({ email });
     }
 
     return { token };
@@ -79,7 +79,7 @@ export class AccountsController {
 
     const token = await this.accountService.createJWTByEmail(email);
     if (token === null) {
-      throw new NotFoundException();
+      throw new NotFoundException({ email });
     }
 
     return { token };
