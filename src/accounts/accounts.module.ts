@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { AccountsController } from './accounts.controller';
 import { HttpModule } from '@nestjs/axios';
-import { AccountsRepository } from './accounts.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { AccountsRepository } from './accounts.repository';
 
 @Module({
   imports: [

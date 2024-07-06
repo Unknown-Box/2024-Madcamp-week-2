@@ -1,9 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { AccountsRepository } from './accounts.repository';
-import { randomUUID } from 'crypto';
-import { SHA256B64 } from 'src/utils/utils';
 import { JwtService } from '@nestjs/jwt';
+import { AccountsRepository } from './accounts.repository';
 
 @Injectable()
 export class AccountsService {
