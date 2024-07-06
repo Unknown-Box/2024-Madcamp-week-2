@@ -76,6 +76,10 @@ export class AccountsService {
   async createJWTByEmailPassword(email: string, password: string): Promise<string | null> {
     const user = await this.accountRepository.getUserByEmailPassword(email, password);
 
+    if (user === null) {
+      return null;
+    }
+
     const userId = user['id'] as string;
     const type = user['type'] as string;
     const displayName = user['display_name'] as string;
@@ -96,12 +100,18 @@ export class AccountsService {
     email: string,
     password: string,
     displayName: string
-  ): Promise<boolean> {
-    return await this.accountRepository.createUser(
-      type,
-      email,
-      password,
-      displayName
-    );
+  ): Promise<'success' | 'failure' | 'conflict'> {
+    try {
+      const isCreated = await this.accountRepository.createUser(
+        type,
+        email,
+        password,
+        displayName
+      );
+
+      return isCreated ? 'success' : 'failure';
+    } catch(e) {
+      return 'conflict';
+    }
   }
 }

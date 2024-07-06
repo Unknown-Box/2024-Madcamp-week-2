@@ -101,6 +101,7 @@ export class AccountsRepository {
 
   getUserByEmailPassword(email: string, password: string): Promise<any | null> {
     const db = this.db;
+    console.log(email, this.encryptPassword(password));
 
     return new Promise((resolve, reject) => {
       db.get(
@@ -159,7 +160,21 @@ export class AccountsRepository {
             return;
           }
 
-          resolve(!!this.lastID);
+          db.all(
+            `SELECT * FROM "Users";`,
+            (err, rows) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+
+              console.log(rows);
+
+              resolve(!!this.lastID);
+            }
+          )
+
+          // resolve(!!this.lastID);
         }
       );
     });

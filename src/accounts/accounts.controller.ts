@@ -1,6 +1,6 @@
-import { BadRequestException, Body, ConflictException, Controller, Get, NotFoundException, Post, Query, Res } from '@nestjs/common';
+import { BadRequestException, Body, ConflictException, Controller, Get, Header, InternalServerErrorException, NotFoundException, Post, Query, Res } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
-import { Response } from 'express';
+import e, { Response } from 'express';
 import { HTMLRedirection } from 'src/utils/utils';
 
 @Controller('accounts')
@@ -27,7 +27,7 @@ export class AccountsController {
 
   @Post('signup')
   async signUp(
-    @Body('type') type?: string,
+    @Body('type') type?: 'expert' | 'student',
     @Body('email') email?: string,
     @Body('password') password?: string,
     @Body('displayName') displayName?: string
@@ -39,10 +39,16 @@ export class AccountsController {
       throw new BadRequestException();
     }
 
-    const isAlreadyExist = await this.accountService.existByEmail(email);
-    if (isAlreadyExist) {
-      throw new ConflictException();
+    const isCreated = await this.accountService.createUser(type, email, password, displayName);
+    switch(isCreated) {
+      case 'failure':
+        throw new InternalServerErrorException();
+
+      case 'conflict':
+        throw new ConflictException();
     }
+
+    return;
   }
 
   @Get('kakao/signin')
