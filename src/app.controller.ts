@@ -1,5 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Headers } from '@nestjs/common';
 import { AppService } from './app.service';
+import { authorize } from './utils/utils';
+import { JwtService } from '@nestjs/jwt';
+import { CoursesService } from './courses/courses.service';
 
 @Controller()
 export class AppController {

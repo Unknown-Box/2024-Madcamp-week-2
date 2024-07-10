@@ -55,7 +55,7 @@ export class AccountsService {
     return payload['email'] ?? null;
   }
 
-  async createJWTByEmail(email: string): Promise<string | null> {
+  async createJWTByEmail(email: string): Promise<string | { email: string } | null> {
     const user = await this.accountRepository.getUserByEmail(email);
 
     if (user === null) {

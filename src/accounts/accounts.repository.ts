@@ -1,6 +1,5 @@
-import { Database } from 'sqlite3';
 import { Injectable } from "@nestjs/common";
-import { DBHander, SHA256B64 } from 'src/utils/utils';
+import { DBHandler, SHA256B64 } from 'src/utils/utils';
 
 @Injectable()
 export class AccountsRepository {
@@ -11,11 +10,11 @@ export class AccountsRepository {
   }
 
   getUserByEmail(email: string): Promise<any | null> {
-    const db = new DBHander().db;
+    const db = new DBHandler().db;
 
     return new Promise((resolve, reject) => {
       db.get(
-        `SELECT * FROM "Users" WHERE email=?`,
+        `SELECT * FROM "Users" WHERE email=? AND is_deleted=0`,
         [ email ],
         function(err, row) {
           if (err) {
@@ -35,12 +34,12 @@ export class AccountsRepository {
   }
 
   getUserByEmailPassword(email: string, password: string): Promise<any | null> {
-    const db = new DBHander().db;
+    const db = new DBHandler().db;
     console.log(email, this.encryptPassword(password));
 
     return new Promise((resolve, reject) => {
       db.get(
-        `SELECT * FROM "Users" WHERE email=? AND password=?`,
+        `SELECT * FROM "Users" WHERE email=? AND password=? AND is_deleted=0`,
         [
           email,
           this.encryptPassword(password)
@@ -68,7 +67,7 @@ export class AccountsRepository {
     password: string,
     displayName: string
   ): Promise<boolean> {
-    const db = new DBHander().db;
+    const db = new DBHandler().db;
 
     return new Promise((resolve, reject) => {
       db.run(
@@ -107,9 +106,7 @@ export class AccountsRepository {
 
               resolve(!!this.lastID);
             }
-          )
-
-          // resolve(!!this.lastID);
+          );
         }
       );
     });
