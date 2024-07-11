@@ -335,7 +335,7 @@ export class CoursesRepository {
           ) AS c
           JOIN "CourseImages" AS ci ON ci.course_id=c.id
           GROUP BY ci.course_id
-          ORDER BY ci.idx ASC
+          ORDER BY ci.idx ASC, RANDOM()
           `,
           (err, rows) => {
             if (err) {
