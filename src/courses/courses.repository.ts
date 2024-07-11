@@ -417,7 +417,7 @@ export class CoursesRepository {
             GROUP BY ci.course_id
             ORDER BY ci.idx ASC
           ) AS c
-          LEFT JOIN "Wishlist" AS w ON w.course_id=c.id AND w.user_id=?
+          LEFT JOIN "Wishlist" AS w ON w.course_id=c.id AND w.user_id=? AND w.is_deleted=0
           ORDER BY createdAt DESC
           `,
           [ userId ],
@@ -486,7 +486,7 @@ export class CoursesRepository {
             GROUP BY ci.course_id
             ORDER BY c.numWishes DESC, c.id ASC, ci.idx ASC
           ) AS c
-          LEFT JOIN "Wishlist" AS w ON w.course_id=c.id AND w.user_id=?
+          LEFT JOIN "Wishlist" AS w ON w.course_id=c.id AND w.user_id=? AND w.is_deleted=0
           `,
           [ userId ],
           (err, rows) => {
@@ -560,7 +560,8 @@ export class CoursesRepository {
             GROUP BY ci.course_id
             ORDER BY ci.idx ASC
           ) AS c
-          LEFT JOIN "Wishlist" AS w ON w.course_id=c.id AND w.user_id=?
+          LEFT JOIN "Wishlist" AS w ON w.course_id=c.id AND w.user_id=? AND w.is_deleted=0
+          ORDER BY RANDOM()
           `,
           [ userId ],
           (err, rows) => {
@@ -761,7 +762,7 @@ export class CoursesRepository {
             return;
           }
 
-          console.log(courseId, userId)
+          console.log(courseId, userId, this.lastID)
 
           resolve(!!this.lastID);
         }
@@ -917,6 +918,7 @@ export class CoursesRepository {
             c.details AS content,
             c.numWishes,
             c.currentParticipants,
+            true AS isParticipating,
             strftime('%s', c.created_at) AS createdAt
           FROM
           (
@@ -1003,6 +1005,7 @@ export class CoursesRepository {
             c.details AS content,
             c.numWishes,
             c.currentParticipants,
+            true AS isFavorite,
             strftime('%s', c.created_at) AS createdAt
           FROM
           (
